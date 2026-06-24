@@ -56,7 +56,7 @@
                 <h1 class="font-bold text-lg tracking-wider">Ginga Vocab Quiz</h1>
             </div>
             <button id="btn-back" class="hidden text-sm bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1" onclick="abortQuiz()">
-                <i class="fas fa-chevron-left text-xs"></i> <span>中断して戻る</span>
+                <i class="fas fa-chevron-left text-xs"></i> <span>Back</span>
             </button>
         </header>
 
@@ -81,7 +81,7 @@
 
                     <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex-1 flex flex-col justify-center space-y-6">
                         <div class="space-y-1">
-                            <span class="text-xs font-bold text-slate-500 tracking-wider block">意味 / HINT</span>
+                            <span class="text-xs font-bold text-slate-500 tracking-wider block">MEANING / HINT</span>
                             <p id="quiz-hint" class="text-base text-slate-700 leading-relaxed font-medium"></p>
                         </div>
 
@@ -92,16 +92,16 @@
 
                         <div id="answer-area" class="hidden space-y-4 pt-4 border-t border-slate-200/60">
                             <div class="text-center">
-                                <span class="text-xs font-bold text-slate-500 tracking-wider block mb-1">正解</span>
+                                <span class="text-xs font-bold text-slate-500 tracking-wider block mb-1">ANSWER</span>
                                 <span id="quiz-answer-word" class="text-2xl font-bold text-custom-green tracking-wide"></span>
                             </div>
                             
                             <div class="flex justify-center space-x-3 pt-2">
                                 <button onclick="speakPhrase()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
-                                    <i class="fas fa-volume-up text-custom-blue"></i> <span>フレーズ全体</span>
+                                    <i class="fas fa-volume-up text-custom-blue"></i> <span>Full Phrase</span>
                                 </button>
                                 <button onclick="speakWord()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
-                                    <i class="fas fa-volume-up text-custom-green"></i> <span>単語のみ</span>
+                                    <i class="fas fa-volume-up text-custom-green"></i> <span>Word Only</span>
                                 </button>
                             </div>
                         </div>
@@ -110,15 +110,15 @@
 
                 <div class="pt-2 safe-bottom-padding">
                     <button id="btn-show-answer" onclick="showAnswer()" class="w-full bg-custom-blue hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity text-center block">
-                        答えを見る
+                        Show Answer
                     </button>
 
                     <div id="judgment-area" class="hidden flex space-x-4">
                         <button onclick="submitJudgment(false)" class="flex-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center space-x-2">
-                            <i class="fas fa-times"></i> <span>違った</span>
+                            <i class="fas fa-times"></i> <span>Incorrect</span>
                         </button>
                         <button onclick="submitJudgment(true)" class="flex-1 bg-custom-green hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity flex items-center justify-center space-x-2">
-                            <i class="fas fa-check"></i> <span>合ってた</span>
+                            <i class="fas fa-check"></i> <span>Correct</span>
                         </button>
                     </div>
                 </div>
@@ -230,11 +230,11 @@
                 // ステータス表示
                 let statusBadge = '';
                 if (isMastered) {
-                    statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-check-circle"></i> マスター済み</span>`;
+                    statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-check-circle"></i> Mastered</span>`;
                 } else if (weakCount > 0) {
-                    statusBadge = `<span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-exclamation-circle"></i> 残り苦手: ${weakCount}問</span>`;
+                    statusBadge = `<span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-exclamation-circle"></i> Weak: ${weakCount} left</span>`;
                 } else {
-                    statusBadge = `<span class="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-full">未着手</span>`;
+                    statusBadge = `<span class="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-full">Not Started</span>`;
                 }
 
                 const card = document.createElement('div');
@@ -249,10 +249,10 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2 pt-2">
                         <button onclick="startQuiz(${s}, false)" class="col-span-2 bg-custom-blue hover:opacity-90 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-opacity shadow-sm">
-                            ${isMastered || weakCount > 0 ? 'もう一度解く' : '解いてみる'}
+                            ${isMastered || weakCount > 0 ? 'Try Again' : 'Start Quiz'}
                         </button>
                         <button onclick="startQuiz(${s}, true)" ${weakCount === 0 ? 'disabled' : ''} class="col-span-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold py-2 px-4 rounded-xl text-sm transition-colors disabled:opacity-40 disabled:pointer-events-none">
-                            <i class="fas fa-fire text-xs"></i> 苦手のみ挑戦
+                            <i class="fas fa-fire text-xs"></i> Weak Words Only
                         </button>
                     </div>
                 `;
@@ -276,7 +276,7 @@
             }
 
             if (currentQuestions.length === 0) {
-                alert("このセクションに苦手問題はありません");
+                alert("No weak words in this section.");
                 return;
             }
 
@@ -291,7 +291,7 @@
         function showQuestion() {
             const currentData = currentQuestions[currentQuizIndex];
             
-            document.getElementById('quiz-title').textContent = `Section ${currentSectionNum}${isIncorrectOnlyMode ? ' (苦手のみ)' : ''}`;
+            document.getElementById('quiz-title').textContent = `Section ${currentSectionNum}${isIncorrectOnlyMode ? ' (Weak Only)' : ''}`;
             document.getElementById('quiz-progress').textContent = `${currentQuizIndex + 1} / ${currentQuestions.length}`;
             
             const progressPercent = ((currentQuizIndex + 1) / currentQuestions.length) * 100;
