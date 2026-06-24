@@ -50,12 +50,12 @@
 
     <div class="app-container max-w-md mx-auto w-full bg-white shadow-lg relative">
         
-        <header class="bg-custom-blue text-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50 pt-[calc(1rem+env(safe-area-inset-top,0px))]">
+        <header class="bg-custom-blue text-white px-4 py-2 shadow-md flex items-center justify-between sticky top-0 z-50" style="padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));">
             <div class="flex items-center space-x-2">
                 <i class="fas fa-lightbulb text-amber-300 drop-shadow-[0_0_4px_rgba(252,211,77,0.6)]"></i>
-                <h1 class="font-bold text-lg tracking-wider">Ginga Vocab Quiz</h1>
+                <h1 class="font-bold text-base tracking-wider">Ginga Vocab Quiz</h1>
             </div>
-            <button id="btn-back" class="hidden text-sm bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1" onclick="abortQuiz()">
+            <button id="btn-back" class="hidden text-sm bg-black/20 hover:bg-black/30 px-3 py-1 rounded-lg transition-colors flex items-center space-x-1" onclick="abortQuiz()">
                 <i class="fas fa-chevron-left text-xs"></i> <span>Back</span>
             </button>
         </header>
