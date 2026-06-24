@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ginga Vocab Quiz</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* カスタムカラーの設定 */
+        :root {
+            --color-custom-blue: #0e538c;
+            --color-custom-green: #07935d;
+        }
+        .bg-custom-blue { background-color: var(--color-custom-blue); }
+        .text-custom-blue { color: var(--color-custom-blue); }
+        .border-custom-blue { border-color: var(--color-custom-blue); }
+        
+        .bg-custom-green { background-color: var(--color-custom-green); }
+        .text-custom-green { color: var(--color-custom-green); }
+
+        /* iPhoneのセーフエリア（下部バー）対策 */
+        .safe-bottom-padding {
+            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen font-sans antialiased flex flex-col justify-between">
+
+    <div class="max-w-md mx-auto w-full min-h-screen flex flex-col bg-white shadow-lg relative justify-between">
+        
+        <header class="bg-custom-blue text-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50 pt-[calc(1rem+env(safe-area-inset-top,0px))]">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-lightbulb text-amber-300 drop-shadow-[0_0_4px_rgba(252,211,77,0.6)]"></i>
+                <h1 class="font-bold text-lg tracking-wider">Ginga Vocab Quiz</h1>
+            </div>
+            <button id="btn-back" class="hidden text-sm bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1" onclick="abortQuiz()">
+                <i class="fas fa-chevron-left text-xs"></i> <span>中断して戻る</span>
+            </button>
+        </header>
+
+        <main class="flex-1 p-4 flex flex-col justify-between">
+
+            <section id="screen-home" class="space-y-4 pt-2 safe-bottom-padding">
+                <div id="section-list" class="space-y-4">
+                    </div>
+            </section>
+
+            <section id="screen-quiz" class="hidden flex-1 flex flex-col justify-between space-y-6">
+                
+                <div class="space-y-4 flex-1 flex flex-col">
+                    <div class="flex justify-between items-center text-sm text-slate-500 font-medium">
+                        <span id="quiz-title">Section 1</span>
+                        <span id="quiz-progress">1 / 10</span>
+                    </div>
+                    
+                    <div class="w-full bg-slate-100 rounded-full h-1.5">
+                        <div id="quiz-progress-bar" class="bg-custom-blue h-1.5 rounded-full transition-all duration-300" style="width: 10%"></div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex-1 flex flex-col justify-center space-y-6">
+                        <div class="space-y-1">
+                            <span class="text-xs font-bold text-slate-500 tracking-wider block">意味 / HINT</span>
+                            <p id="quiz-hint" class="text-base text-slate-700 leading-relaxed font-medium"></p>
+                        </div>
+
+                        <div class="space-y-2 pt-4 border-t border-slate-200/60">
+                            <span class="text-xs font-bold text-slate-500 tracking-wider block">ENGLISH PHRASE</span>
+                            <p id="quiz-phrase" class="text-xl font-semibold text-slate-800 leading-relaxed tracking-wide"></p>
+                        </div>
+
+                        <div id="answer-area" class="hidden space-y-4 pt-4 border-t border-slate-200/60">
+                            <div class="text-center">
+                                <span class="text-xs font-bold text-slate-500 tracking-wider block mb-1">正解</span>
+                                <span id="quiz-answer-word" class="text-2xl font-bold text-custom-green tracking-wide"></span>
+                            </div>
+                            
+                            <div class="flex justify-center space-x-3 pt-2">
+                                <button onclick="speakPhrase()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
+                                    <i class="fas fa-volume-up text-custom-blue"></i> <span>フレーズ全体</span>
+                                </button>
+                                <button onclick="speakWord()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
+                                    <i class="fas fa-volume-up text-custom-green"></i> <span>単語のみ</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 safe-bottom-padding">
+                    <button id="btn-show-answer" onclick="showAnswer()" class="w-full bg-custom-blue hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity text-center block">
+                        答えを見る
+                    </button>
+
+                    <div id="judgment-area" class="hidden flex space-x-4">
+                        <button onclick="submitJudgment(false)" class="flex-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center space-x-2">
+                            <i class="fas fa-times"></i> <span>違った</span>
+                        </button>
+                        <button onclick="submitJudgment(true)" class="flex-1 bg-custom-green hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity flex items-center justify-center space-x-2">
+                            <i class="fas fa-check"></i> <span>合ってた</span>
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // 1. 問題データ配列（全50問、ID付き、10問ずつ5セクションに自動分割可能）
+        const wordsData = [
+            // Section 1
+            { id: 1, word: "be into", phrase: "I'm really (____) this drama called \"A Drop of the Galaxy.\"", hint: "〜にハマっている\n「『銀河の一滴』っていうドラマにすごくハマってるんだ。」" },
+            { id: 2, word: "obsession", phrase: "This new show is my latest (____).", hint: "大好きなもの、どハマり\n「この新しい番組、最近私がどハマりしてるものんだ。」" },
+            { id: 3, word: "hooked", phrase: "I got (____) from the very first episode.", hint: "夢中になって、抜け出せない\n「最初の第1話から完全に心を掴まれちゃったよ。」" },
+            { id: 4, word: "obsessed", phrase: "I’m completely (____) with the cast.", hint: "頭から離れないほど好き\n「出演陣がとにかく好きすぎて頭から離れない。」" },
+            { id: 5, word: "reason", phrase: "The (____) I like it so much is the characters.", hint: "理由、なぜかというと\n「私がそれをこんなに好きな理由は、登場人物たちんだ。」" },
+            { id: 6, word: "draw", phrase: "What (____)s me to the show is the realistic storyline.", hint: "惹きつける、魅力\n「その番組に惹きつけられるのは、リアルなストーリー展開だ。」" },
+            { id: 7, word: "appeal", phrase: "The main (____) of the drama is how relatable it is.", hint: "魅力、訴えかけるもの\n「そのドラマの主な魅力は、いかに共感できるかという点だ。」" },
+            { id: 8, word: "character", phrase: "The (____)s are all so unique and lovable.", hint: "登場人物、キャラクター\n「登場人物たちがみんな個性的で愛らしいんだ。」" },
+            { id: 9, word: "cast member", phrase: "One of the (____)s is an actress I’ve always liked.", hint: "出演者、キャスト\n「出演者の一人が、私がずっと好きだった女優さんんだ。」" },
+            { id: 10, word: "adorable", phrase: "Haru-chan is absolutely (____) in this role.", hint: "愛らしい、可愛い\n「この役のハルちゃん、本当に愛らしくて可愛いんだよね。」" },
+            // Section 2
+            { id: 11, word: "charming", phrase: "Her smile is incredibly (____).", hint: "チャーミングな、魅力的な\n「彼女の笑顔は信じられないほどチャーミングだ。」" },
+            { id: 12, word: "cute", phrase: "I love her style; she always looks so (____).", hint: "可愛い\n「彼女のスタイルが好きなんだ。いつもすごく可愛く見える。」" },
+            { id: 13, word: "captivating", phrase: "Their acting is so (____) that I can't look away.", hint: "心を奪う、魅惑的な\n protective:「彼らの演技があまりにも魅惑的で、目が離せない。」" },
+            { id: 14, word: "vibe", phrase: "The whole show has a really cozy (____).", hint: "雰囲気、空気感\n「番組全体がすごく居心地の良い雰囲気を持っている。」" },
+            { id: 15, word: "chemistry", phrase: "The (____) between the two leads is amazing.", hint: "相性、ケミストリー\n「主演2人の相性（ケミストリー）が素晴らしい。」" },
+            { id: 16, word: "politics", phrase: "I’ve never really cared about (____).", hint: "政治\n「政治のことなんて、これまでの人生で全然気にしたことがなかった。」" },
+            { id: 17, word: "political", phrase: "The show deals with some heavy (____) themes.", hint: "政治的な\n「その番組は、いくつかの重い政治的テーマを扱っている。」" },
+            { id: 18, word: "field", phrase: "Politics is a (____) I know almost nothing about.", hint: "分野、領域\n「政治は、私がほとんど何も知らない分野だ。」" },
+            { id: 19, word: "subject", phrase: "It’s a dry (____), but the drama makes it interesting.", hint: "話題、科目、対象\n「退屈な話題だけど、そのドラマは面白く見せてくれる。」" },
+            { id: 20, word: "interest", phrase: "I had zero (____) in how the government works.", hint: "興味、関心\n「政府がどう機能しているかについて、興味はゼロだった。」" },
+            // Section 3
+            { id: 21, word: "appeal to", phrase: "Political dramas usually don't (____) me.", hint: "〜の興味を引く\n「政治ドラマは普段、私の興味を引くものではない。」" },
+            { id: 22, word: "clueless", phrase: "I used to be completely (____) about these issues.", hint: "全く知識がない、疎い\n「こういう問題について、以前の私は完全に無知だった。」" },
+            { id: 23, word: "unfamiliar", phrase: "It’s a world that is totally (____) to me.", hint: "馴染みがない、知らない\n「それは私にとって、完全に馴染みのない世界だ。」" },
+            { id: 24, word: "care about", phrase: "It makes you (____) things you used to ignore.", hint: "関心がある、気にかける\n「自分が以前は無視していたようなことに関心を持たせてくれる。」" },
+            { id: 25, word: "indifferent", phrase: "I used to be (____) to current events.", hint: "無関心な\n「以前は時事問題に対して無関心だった。」" },
+            { id: 26, word: "give it one's all", phrase: "(____)ing it their all in every scene is normal for them.", hint: "全力を尽くす\n「彼らはどのシーンでも常に全力を尽くしている。」" },
+            { id: 27, word: "work hard", phrase: "Watching someone (____) is really inspiring.", hint: "一生一生懸命がんばる\n「誰かが一生懸命がんばっている姿を見るのは、本当に刺激になる。」" },
+            { id: 28, word: "effort", phrase: "You can see the (____) they put into their roles.", hint: "努力\n「彼らが役作りに注ぎ込んでいる努力が伝わってくる。」" },
+            { id: 29, word: "dedication", phrase: "I admire the characters' (____) to their jobs.", hint: "献身、ひたむきさ\n「登場人物たちの、仕事に対するひたむきさに感心する。」" },
+            { id: 30, word: "dedicated", phrase: "She plays a very (____) young politician.", hint: "ひたむきな、熱心な\n「彼女は非常に熱心でひたむきな若手政治家を演じている。」" },
+            // Section 4
+            { id: 31, word: "passionate", phrase: "Seeing people get (____) about their work is great.", hint: "情熱的な\n「人々が自分の仕事に対して情熱的になっているのを見るのは素晴らしい。」" },
+            { id: 32, word: "try hard", phrase: "They (____) even when things get tough.", hint: "努力する、頑張る\n「状況が厳しくなったときでも、彼らは本当に一生懸命頑張る。」" },
+            { id: 33, word: "strive", phrase: "The characters (____) to make the world a better place.", hint: "励む、努力する\n「登場人物たちは世界をより良くしようと努力している。」" },
+            { id: 34, word: "struggle", phrase: "It’s touching to see them (____) and overcome obstacles.", hint: "もがく、苦闘する\n「彼らがもがき苦しみながらも、障害を乗り越える姿を見るのは感動的だ。」" },
+            { id: 35, word: "overcome", phrase: "They try to (____) their lack of experience.", hint: "乗り越える\n「彼らは自分たちの経験不足を乗り越えようと努力する。」" },
+            { id: 36, word: "inspiring", phrase: "It’s just so (____) to watch.", hint: "刺激になる、元気をくれる\n「見ているだけで本当に元気がもらえる（刺激になる）。」" },
+            { id: 37, word: "touching", phrase: "Their sincerity is very (____).", hint: "感動的な、ジーンとくる\n「彼らの誠実さは、見ていてとてもジーンとくる。」" },
+            { id: 38, word: "admirable", phrase: "Their work ethic is truly (____).", hint: "立派な、感心する\n「彼らの労働に対する姿勢（仕事への誠実さ）は本当に立派だ。」" },
+            { id: 39, word: "determined", phrase: "The protagonist is (____) to make a difference.", hint: "意志の強い、決意した\n「主人公は、変化をもたらそうと強く決意している。」" },
+            { id: 40, word: "give it a shot", phrase: "It makes me want to (____) too, whatever it is.", hint: "挑戦してみる、やってみる\n「それが何であれ、自分もちょっと挑戦してみようかなという気にさせてくれる。」" },
+            // Section 5
+            { id: 41, word: "fascinating", phrase: "I find the human drama in it (____).", hint: "最高に面白い、興味深い\n「そこにある人間ドラマが最高に面白いと思う。」" },
+            { id: 42, word: "worth watching", phrase: "It’s definitely a show (____).", hint: "見る価値がある\n「間違いなく見る価値のある番組だよ。」" },
+            { id: 43, word: "look forward to", phrase: "I really (____) it every week.", hint: "〜を楽しみに待つ\n「毎週、本当に楽しみに待っているんだ。」" },
+            { id: 44, word: "highlight", phrase: "Watching this drama is the (____) of my week.", hint: "見どころ、一番の楽しみ\n「このドラマを見ることが、私の1週間の一番の楽しみだ。」" },
+            { id: 45, word: "can't wait", phrase: "I (____) for the next episode.", hint: "待ちきれない\n「次のエピソードが待ちきれないよ。」" },
+            { id: 46, word: "tune in", phrase: "I (____) every Sunday night without fail.", hint: "番組を見る、チャンネルを合わせる\n「毎週日曜日、欠かさずチャンネルを合わせて見ている。」" },
+            { id: 47, word: "weekly routine", phrase: "It has completely become part of my (____).", hint: "毎週のルーティン、日課\n「すっかり私の毎週のルーティン（お決まりの楽しみ）の一部になった。」" },
+            { id: 48, word: "entertaining", phrase: "It’s both educational and highly (____).", hint: "エンターテインメント性が高い、面白い\n「勉強になるし、同時にエンタメとしてもすごく面白い。」" },
+            { id: 49, word: "perspective", phrase: "It gave me a whole new (____) on politics.", hint: "視点、ものの見方\n「政治に対して、全く新しい視点（ものの見方）をくれた。」" },
+            { id: 50, word: "never miss", phrase: "I (____) a week.", hint: "絶対に逃さない、欠かさず見る\n「毎週、一回も欠かさず見ているよ。」" }
+        ];
+
+        // 2. 状態管理変数
+        const SECTION_SIZE = 10;
+        let currentQuestions = [];
+        let currentQuizIndex = 0;
+        let currentSectionNum = 1;
+        let isIncorrectOnlyMode = false;
+
+        // 苦手リスト
+        let weakList = JSON.parse(localStorage.getItem('ginga_weak_list')) || [];
+        // クリア済みセクション管理
+        let masterProgress = JSON.parse(localStorage.getItem('ginga_master_progress')) || {};
+
+        // 3. 画面描画初期化
+        window.addEventListener('DOMContentLoaded', () => {
+            renderHome();
+            if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = getFemaleVoice;
+            }
+        });
+
+        // 4. ホーム画面の動的生成
+        function renderHome() {
+            document.getElementById('screen-home').classList.remove('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('btn-back').classList.add('hidden');
+
+            const sectionListContainer = document.getElementById('section-list');
+            sectionListContainer.innerHTML = '';
+
+            const totalSections = Math.ceil(wordsData.length / SECTION_SIZE);
+
+            for (let s = 1; s <= totalSections; s++) {
+                const startIndex = (s - 1) * SECTION_SIZE;
+                const sectionWords = wordsData.slice(startIndex, startIndex + SECTION_SIZE);
+                const sectionIds = sectionWords.map(w => w.id);
+
+                const weakCount = sectionIds.filter(id => weakList.includes(id)).length;
+                const isMastered = masterProgress[s] === true && weakCount === 0;
+
+                // ステータス表示
+                let statusBadge = '';
+                if (isMastered) {
+                    statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-check-circle"></i> マスター済み</span>`;
+                } else if (weakCount > 0) {
+                    statusBadge = `<span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-exclamation-circle"></i> 残り苦手: ${weakCount}問</span>`;
+                } else {
+                    statusBadge = `<span class="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-full">未着手</span>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">Section ${s}</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">No.${startIndex + 1} 〜 No.${startIndex + SECTION_SIZE}</p>
+                        </div>
+                        <div>${statusBadge}</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 pt-2">
+                        <button onclick="startQuiz(${s}, false)" class="col-span-2 bg-custom-blue hover:opacity-90 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-opacity shadow-sm">
+                            ${isMastered || weakCount > 0 ? 'もう一度解く' : '解いてみる'}
+                        </button>
+                        <button onclick="startQuiz(${s}, true)" ${weakCount === 0 ? 'disabled' : ''} class="col-span-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold py-2 px-4 rounded-xl text-sm transition-colors disabled:opacity-40 disabled:pointer-events-none">
+                            <i class="fas fa-fire text-xs"></i> 苦手のみ挑戦
+                        </button>
+                    </div>
+                `;
+                sectionListContainer.appendChild(card);
+            }
+        }
+
+        // 5. クイズ開始処理
+        function startQuiz(sectionNum, incorrectOnly) {
+            currentSectionNum = sectionNum;
+            isIncorrectOnlyMode = incorrectOnly;
+            currentQuizIndex = 0;
+
+            const startIndex = (sectionNum - 1) * SECTION_SIZE;
+            const allSectionQuestions = wordsData.slice(startIndex, startIndex + SECTION_SIZE);
+
+            if (incorrectOnly) {
+                currentQuestions = allSectionQuestions.filter(q => weakList.includes(q.id));
+            } else {
+                currentQuestions = [...allSectionQuestions];
+            }
+
+            if (currentQuestions.length === 0) {
+                alert("このセクションに苦手問題はありません");
+                return;
+            }
+
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('btn-back').classList.remove('hidden');
+
+            showQuestion();
+        }
+
+        // 6. 問題表示処理
+        function showQuestion() {
+            const currentData = currentQuestions[currentQuizIndex];
+            
+            document.getElementById('quiz-title').textContent = `Section ${currentSectionNum}${isIncorrectOnlyMode ? ' (苦手のみ)' : ''}`;
+            document.getElementById('quiz-progress').textContent = `${currentQuizIndex + 1} / ${currentQuestions.length}`;
+            
+            const progressPercent = ((currentQuizIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+
+            document.getElementById('quiz-hint').innerHTML = currentData.hint.replace(/\n/g, '<br>');
+            document.getElementById('quiz-phrase').textContent = currentData.phrase;
+
+            document.getElementById('answer-area').classList.add('hidden');
+            document.getElementById('judgment-area').classList.add('hidden');
+            document.getElementById('btn-show-answer').classList.remove('hidden');
+        }
+
+        // 7. 答え表示処理
+        function showAnswer() {
+            const currentData = currentQuestions[currentQuizIndex];
+            
+            let processedWord = currentData.word.toLowerCase();
+            let processedPhrase = currentData.phrase;
+
+            if (currentData.phrase.trim().startsWith("(____)")) {
+                processedWord = processedWord.charAt(0).toUpperCase() + processedWord.slice(1);
+            }
+
+            processedPhrase = currentData.phrase.replace("(____)", processedWord);
+
+            document.getElementById('quiz-answer-word').textContent = processedWord;
+            document.getElementById('quiz-phrase').textContent = processedPhrase;
+
+            document.getElementById('answer-area').classList.remove('hidden');
+            document.getElementById('judgment-area').classList.remove('hidden');
+            document.getElementById('btn-show-answer').classList.add('hidden');
+
+            speakPhrase();
+        }
+
+        // 8. 自己判定の提出処理
+        function submitJudgment(isCorrect) {
+            const currentData = currentQuestions[currentQuizIndex];
+
+            if (isCorrect) {
+                weakList = weakList.filter(id => id !== currentData.id);
+            } else {
+                if (!weakList.includes(currentData.id)) {
+                    weakList.push(currentData.id);
+                }
+            }
+            localStorage.setItem('ginga_weak_list', JSON.stringify(weakList));
+
+            currentQuizIndex++;
+            if (currentQuizIndex < currentQuestions.length) {
+                showQuestion();
+            } else {
+                if (!isIncorrectOnlyMode) {
+                    masterProgress[currentSectionNum] = true;
+                    localStorage.setItem('ginga_master_progress', JSON.stringify(masterProgress));
+                }
+                alert("セクション内のすべての問題が終了しました");
+                abortQuiz();
+            }
+        }
+
+        // 9. 中断して戻る機能
+        function abortQuiz() {
+            if (currentQuizIndex < currentQuestions.length && document.getElementById('screen-home').classList.contains('hidden')) {
+                if (!confirm("現在のセクションの進捗を破棄してホーム画面に戻りますか？")) {
+                    return;
+                }
+            }
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('btn-back').classList.add('hidden');
+            document.getElementById('screen-home').classList.remove('hidden');
+            
+            renderHome();
+        }
+
+        // 10. Web Speech APIによる音声再生機能
+        function getFemaleVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            const femaleKeywords = ['samantha', 'zira', 'female', 'hazel', 'moira', 'tessa', 'karen', 'susan'];
+            
+            let selectedVoice = voices.find(voice => {
+                const nameLower = voice.name.toLowerCase();
+                return voice.lang.startsWith('en') && femaleKeywords.some(keyword => nameLower.includes(keyword));
+            });
+
+            if (!selectedVoice) {
+                selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+            }
+
+            return selectedVoice;
+        }
+
+        function speakPhrase() {
+            const text = document.getElementById('quiz-phrase').textContent;
+            playSpeech(text);
+        }
+
+        function speakWord() {
+            const text = document.getElementById('quiz-answer-word').textContent;
+            playSpeech(text);
+        }
+
+        function playSpeech(text) {
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            const femaleVoice = getFemaleVoice();
+            if (femaleVoice) {
+                utterance.voice = femaleVoice;
+            }
+            
+            utterance.lang = 'en-US';
+            utterance.rate = 1.0;
+
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>
