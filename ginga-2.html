@@ -23,11 +23,32 @@
         .safe-bottom-padding {
             padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
         }
+
+        /* 画面高さをiPhoneのブラウザUIを考慮した高さに固定 */
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        .app-container {
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .app-main {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        #screen-quiz {
+            overflow: hidden;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen font-sans antialiased flex flex-col justify-between">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
 
-    <div class="max-w-md mx-auto w-full min-h-screen flex flex-col bg-white shadow-lg relative justify-between">
+    <div class="app-container max-w-md mx-auto w-full bg-white shadow-lg relative">
         
         <header class="bg-custom-blue text-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50 pt-[calc(1rem+env(safe-area-inset-top,0px))]">
             <div class="flex items-center space-x-2">
@@ -39,7 +60,7 @@
             </button>
         </header>
 
-        <main class="flex-1 p-4 flex flex-col justify-between">
+        <main class="app-main p-4">
 
             <section id="screen-home" class="space-y-4 pt-2 safe-bottom-padding">
                 <div id="section-list" class="space-y-4">
@@ -87,7 +108,7 @@
                     </div>
                 </div>
 
-                <div class="pt-2 safe-bottom-padding" style="padding-bottom: 200px;">
+                <div class="pt-2 safe-bottom-padding">
                     <button id="btn-show-answer" onclick="showAnswer()" class="w-full bg-custom-blue hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity text-center block">
                         答えを見る
                     </button>
