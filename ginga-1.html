@@ -18,15 +18,20 @@
         
         .bg-custom-green { background-color: var(--color-custom-green); }
         .text-custom-green { color: var(--color-custom-green); }
+
+        /* コンテナ下部に200pxのマージンを確保 */
+        .iphone-margin-bottom {
+            margin-bottom: 200px;
+        }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen font-sans antialiased flex items-center justify-center p-4">
+<body class="bg-slate-50 text-slate-800 min-h-screen font-sans antialiased flex flex-col justify-between">
 
-    <div class="max-w-md mx-auto w-full h-[80vh] flex flex-col bg-white shadow-2xl rounded-2xl overflow-hidden relative justify-between border border-slate-200">
+    <div class="max-w-md mx-auto w-full min-h-screen flex flex-col bg-white shadow-lg relative justify-between iphone-margin-bottom">
         
-        <header class="bg-custom-blue text-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50">
+        <header class="bg-custom-blue text-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50 pt-[calc(1rem+env(safe-area-inset-top,0px))]">
             <div class="flex items-center space-x-2">
-                <i class="fas fa-space-shuttle transform -rotate-45 text-slate-200"></i>
+                <i class="fas fa-lightbulb text-amber-300 drop-shadow-[0_0_4px_rgba(252,211,77,0.6)]"></i>
                 <h1 class="font-bold text-lg tracking-wider">Ginga Vocab Quiz</h1>
             </div>
             <button id="btn-back" class="hidden text-sm bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1" onclick="abortQuiz()">
@@ -34,16 +39,16 @@
             </button>
         </header>
 
-        <main class="flex-1 p-4 flex flex-col justify-between overflow-y-auto">
+        <main class="flex-1 p-4 flex flex-col justify-between">
 
             <section id="screen-home" class="space-y-4 pt-2">
                 <div id="section-list" class="space-y-4">
                     </div>
             </section>
 
-            <section id="screen-quiz" class="hidden flex-1 flex flex-col justify-between space-y-4">
+            <section id="screen-quiz" class="hidden flex-1 flex flex-col justify-between space-y-6">
                 
-                <div class="space-y-3 flex-1 flex flex-col">
+                <div class="space-y-4 flex-1 flex flex-col">
                     <div class="flex justify-between items-center text-sm text-slate-500 font-medium">
                         <span id="quiz-title">Section 1</span>
                         <span id="quiz-progress">1 / 10</span>
@@ -53,28 +58,28 @@
                         <div id="quiz-progress-bar" class="bg-custom-blue h-1.5 rounded-full transition-all duration-300" style="width: 10%"></div>
                     </div>
 
-                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex-1 flex flex-col justify-center space-y-4">
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex-1 flex flex-col justify-center space-y-6">
                         <div class="space-y-1">
-                            <span class="text-xs font-bold text-slate-400 tracking-wider block">意味 / HINT</span>
-                            <p id="quiz-hint" class="text-sm text-slate-700 leading-relaxed font-medium"></p>
+                            <span class="text-xs font-bold text-slate-500 tracking-wider block">意味 / HINT</span>
+                            <p id="quiz-hint" class="text-base text-slate-700 leading-relaxed font-medium"></p>
                         </div>
 
-                        <div class="space-y-1 pt-3 border-t border-slate-200/60">
-                            <span class="text-xs font-bold text-slate-400 tracking-wider block">ENGLISH PHRASE</span>
-                            <p id="quiz-phrase" class="text-base font-semibold text-slate-800 leading-relaxed tracking-wide"></p>
+                        <div class="space-y-2 pt-4 border-t border-slate-200/60">
+                            <span class="text-xs font-bold text-slate-500 tracking-wider block">ENGLISH PHRASE</span>
+                            <p id="quiz-phrase" class="text-xl font-semibold text-slate-800 leading-relaxed tracking-wide"></p>
                         </div>
 
-                        <div id="answer-area" class="hidden space-y-3 pt-3 border-t border-slate-200/60">
+                        <div id="answer-area" class="hidden space-y-4 pt-4 border-t border-slate-200/60">
                             <div class="text-center">
-                                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-0.5">正解</span>
-                                <span id="quiz-answer-word" class="text-xl font-bold text-custom-green tracking-wide"></span>
+                                <span class="text-xs font-bold text-slate-500 tracking-wider block mb-1">正解</span>
+                                <span id="quiz-answer-word" class="text-2xl font-bold text-custom-green tracking-wide"></span>
                             </div>
                             
-                            <div class="flex justify-center space-x-2 pt-1">
-                                <button onclick="speakPhrase()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-xs py-1.5 px-3 rounded-lg flex items-center space-x-1 transition-colors">
+                            <div class="flex justify-center space-x-3 pt-2">
+                                <button onclick="speakPhrase()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
                                     <i class="fas fa-volume-up text-custom-blue"></i> <span>フレーズ全体</span>
                                 </button>
-                                <button onclick="speakWord()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-xs py-1.5 px-3 rounded-lg flex items-center space-x-1 transition-colors">
+                                <button onclick="speakWord()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
                                     <i class="fas fa-volume-up text-custom-green"></i> <span>単語のみ</span>
                                 </button>
                             </div>
@@ -83,15 +88,15 @@
                 </div>
 
                 <div class="pt-2">
-                    <button id="btn-show-answer" onclick="showAnswer()" class="w-full bg-custom-blue hover:opacity-90 text-white font-bold py-3 rounded-xl shadow-md transition-opacity text-center block text-sm">
+                    <button id="btn-show-answer" onclick="showAnswer()" class="w-full bg-custom-blue hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity text-center block">
                         答えを見る
                     </button>
 
-                    <div id="judgment-area" class="hidden flex space-x-3">
-                        <button onclick="submitJudgment(false)" class="flex-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 font-bold py-3 rounded-xl transition-colors flex items-center justify-center space-x-1.5 text-sm">
+                    <div id="judgment-area" class="hidden flex space-x-4">
+                        <button onclick="submitJudgment(false)" class="flex-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center space-x-2">
                             <i class="fas fa-times"></i> <span>違った</span>
                         </button>
-                        <button onclick="submitJudgment(true)" class="flex-1 bg-custom-green hover:opacity-90 text-white font-bold py-3 rounded-xl shadow-md transition-opacity flex items-center justify-center space-x-1.5 text-sm">
+                        <button onclick="submitJudgment(true)" class="flex-1 bg-custom-green hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity flex items-center justify-center space-x-2">
                             <i class="fas fa-check"></i> <span>合ってた</span>
                         </button>
                     </div>
@@ -150,7 +155,7 @@
             { id: 39, word: "determined", phrase: "The protagonist is (____) to make a difference.", hint: "意志の強い、決意した\n「主人公は、変化をもたらそうと強く決意している。」" },
             { id: 40, word: "give it a shot", phrase: "It makes me want to (____) too, whatever it is.", hint: "挑戦してみる、やってみる\n「それが何であれ、自分もちょっと挑戦してみようかなという気にさせてくれる。」" },
             // Section 5
-            { id: 41, word: "fascinating", phrase: "I find the human drama in it (____).", hint: "最高に面白い、興味深い\n「そこにある人間ドラマが最高に面白いと思う。」" },
+            { id: 41, word: "fascinating", phrase: "I find the human drama in it (____).", hint: "最高に面白い、興味深い\n「そこにある人間 drama が最高に面白いと思う。」" },
             { id: 42, word: "worth watching", phrase: "It’s definitely a show (____).", hint: "見る価値がある\n「間違いなく見る価値のある番組だよ。」" },
             { id: 43, word: "look forward to", phrase: "I really (____) it every week.", hint: "〜を楽しみに待つ\n「毎週、本当に楽しみに待っているんだ。」" },
             { id: 44, word: "highlight", phrase: "Watching this drama is the (____) of my week.", hint: "見どころ、一番の楽しみ\n「このドラマを見ることが、私の1週間の一番の楽しみだ。」" },
