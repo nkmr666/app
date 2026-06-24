@@ -18,18 +18,13 @@
         
         .bg-custom-green { background-color: var(--color-custom-green); }
         .text-custom-green { color: var(--color-custom-green); }
-
-        /* iPhoneのセーフエリア（下部バー）対策 */
-        .safe-bottom-padding {
-            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
-        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen font-sans antialiased flex flex-col justify-between">
+<body class="bg-slate-100 text-slate-800 min-h-screen font-sans antialiased flex items-center justify-center p-4">
 
-    <div class="max-w-md mx-auto w-full min-h-screen flex flex-col bg-white shadow-lg relative justify-between">
+    <div class="max-w-md mx-auto w-full h-[80vh] flex flex-col bg-white shadow-2xl rounded-2xl overflow-hidden relative justify-between border border-slate-200">
         
-        <header class="bg-custom-blue text-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50 pt-[calc(1rem+env(safe-area-inset-top,0px))]">
+        <header class="bg-custom-blue text-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50">
             <div class="flex items-center space-x-2">
                 <i class="fas fa-space-shuttle transform -rotate-45 text-slate-200"></i>
                 <h1 class="font-bold text-lg tracking-wider">Ginga Vocab Quiz</h1>
@@ -39,16 +34,16 @@
             </button>
         </header>
 
-        <main class="flex-1 p-4 flex flex-col justify-between">
+        <main class="flex-1 p-4 flex flex-col justify-between overflow-y-auto">
 
-            <section id="screen-home" class="space-y-4 pt-2 safe-bottom-padding">
+            <section id="screen-home" class="space-y-4 pt-2">
                 <div id="section-list" class="space-y-4">
                     </div>
             </section>
 
-            <section id="screen-quiz" class="hidden flex-1 flex flex-col justify-between space-y-6">
+            <section id="screen-quiz" class="hidden flex-1 flex flex-col justify-between space-y-4">
                 
-                <div class="space-y-4 flex-1 flex flex-col">
+                <div class="space-y-3 flex-1 flex flex-col">
                     <div class="flex justify-between items-center text-sm text-slate-500 font-medium">
                         <span id="quiz-title">Section 1</span>
                         <span id="quiz-progress">1 / 10</span>
@@ -58,28 +53,28 @@
                         <div id="quiz-progress-bar" class="bg-custom-blue h-1.5 rounded-full transition-all duration-300" style="width: 10%"></div>
                     </div>
 
-                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex-1 flex flex-col justify-center space-y-6">
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex-1 flex flex-col justify-center space-y-4">
                         <div class="space-y-1">
-                            <span class="text-xs font-bold text-slate-500 tracking-wider block">意味 / HINT</span>
-                            <p id="quiz-hint" class="text-base text-slate-700 leading-relaxed font-medium"></p>
+                            <span class="text-xs font-bold text-slate-400 tracking-wider block">意味 / HINT</span>
+                            <p id="quiz-hint" class="text-sm text-slate-700 leading-relaxed font-medium"></p>
                         </div>
 
-                        <div class="space-y-2 pt-4 border-t border-slate-200/60">
-                            <span class="text-xs font-bold text-slate-500 tracking-wider block">ENGLISH PHRASE</span>
-                            <p id="quiz-phrase" class="text-xl font-semibold text-slate-800 leading-relaxed tracking-wide"></p>
+                        <div class="space-y-1 pt-3 border-t border-slate-200/60">
+                            <span class="text-xs font-bold text-slate-400 tracking-wider block">ENGLISH PHRASE</span>
+                            <p id="quiz-phrase" class="text-base font-semibold text-slate-800 leading-relaxed tracking-wide"></p>
                         </div>
 
-                        <div id="answer-area" class="hidden space-y-4 pt-4 border-t border-slate-200/60">
+                        <div id="answer-area" class="hidden space-y-3 pt-3 border-t border-slate-200/60">
                             <div class="text-center">
-                                <span class="text-xs font-bold text-slate-500 tracking-wider block mb-1">正解</span>
-                                <span id="quiz-answer-word" class="text-2xl font-bold text-custom-green tracking-wide"></span>
+                                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-0.5">正解</span>
+                                <span id="quiz-answer-word" class="text-xl font-bold text-custom-green tracking-wide"></span>
                             </div>
                             
-                            <div class="flex justify-center space-x-3 pt-2">
-                                <button onclick="speakPhrase()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
+                            <div class="flex justify-center space-x-2 pt-1">
+                                <button onclick="speakPhrase()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-xs py-1.5 px-3 rounded-lg flex items-center space-x-1 transition-colors">
                                     <i class="fas fa-volume-up text-custom-blue"></i> <span>フレーズ全体</span>
                                 </button>
-                                <button onclick="speakWord()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
+                                <button onclick="speakWord()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-xs py-1.5 px-3 rounded-lg flex items-center space-x-1 transition-colors">
                                     <i class="fas fa-volume-up text-custom-green"></i> <span>単語のみ</span>
                                 </button>
                             </div>
@@ -87,16 +82,16 @@
                     </div>
                 </div>
 
-                <div class="pt-2 safe-bottom-padding">
-                    <button id="btn-show-answer" onclick="showAnswer()" class="w-full bg-custom-blue hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity text-center block">
+                <div class="pt-2">
+                    <button id="btn-show-answer" onclick="showAnswer()" class="w-full bg-custom-blue hover:opacity-90 text-white font-bold py-3 rounded-xl shadow-md transition-opacity text-center block text-sm">
                         答えを見る
                     </button>
 
-                    <div id="judgment-area" class="hidden flex space-x-4">
-                        <button onclick="submitJudgment(false)" class="flex-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center space-x-2">
+                    <div id="judgment-area" class="hidden flex space-x-3">
+                        <button onclick="submitJudgment(false)" class="flex-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 font-bold py-3 rounded-xl transition-colors flex items-center justify-center space-x-1.5 text-sm">
                             <i class="fas fa-times"></i> <span>違った</span>
                         </button>
-                        <button onclick="submitJudgment(true)" class="flex-1 bg-custom-green hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity flex items-center justify-center space-x-2">
+                        <button onclick="submitJudgment(true)" class="flex-1 bg-custom-green hover:opacity-90 text-white font-bold py-3 rounded-xl shadow-md transition-opacity flex items-center justify-center space-x-1.5 text-sm">
                             <i class="fas fa-check"></i> <span>合ってた</span>
                         </button>
                     </div>
@@ -124,7 +119,7 @@
             // Section 2
             { id: 11, word: "charming", phrase: "Her smile is incredibly (____).", hint: "チャーミングな、魅力的な\n「彼女の笑顔は信じられないほどチャーミングだ。」" },
             { id: 12, word: "cute", phrase: "I love her style; she always looks so (____).", hint: "可愛い\n「彼女のスタイルが好きなんだ。いつもすごく可愛く見える。」" },
-            { id: 13, word: "captivating", phrase: "Their acting is so (____) that I can't look away.", hint: "心を奪う、魅惑的な\n protective:「彼らの演技があまりにも魅惑的で、目が離せない。」" },
+            { id: 13, word: "captivating", phrase: "Their acting is so (____) that I can't look away.", hint: "心を奪う、魅惑的な\n「彼らの演技があまりにも魅惑的で、目が離せない。」" },
             { id: 14, word: "vibe", phrase: "The whole show has a really cozy (____).", hint: "雰囲気、空気感\n「番組全体がすごく居心地の良い雰囲気を持っている。」" },
             { id: 15, word: "chemistry", phrase: "The (____) between the two leads is amazing.", hint: "相性、ケミストリー\n「主演2人の相性（ケミストリー）が素晴らしい。」" },
             { id: 16, word: "politics", phrase: "I’ve never really cared about (____).", hint: "政治\n「政治のことなんて、これまでの人生で全然気にしたことがなかった。」" },
