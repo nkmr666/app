@@ -2,28 +2,46 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Ginga Vocab Quiz</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
-<body class="bg-slate-50 text-slate-800 min-h-screen font-sans antialiased">
-
-    <div class="max-w-md mx-auto min-h-screen flex flex-col bg-white shadow-lg relative">
+    <style>
+        /* カスタムカラーの設定 */
+        :root {
+            --color-custom-blue: #144c7a;
+            --color-custom-green: #07935d;
+        }
+        .bg-custom-blue { background-color: var(--color-custom-blue); }
+        .text-custom-blue { color: var(--color-custom-blue); }
+        .border-custom-blue { border-color: var(--color-custom-blue); }
         
-        <header class="bg-slate-600 text-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50">
+        .bg-custom-green { background-color: var(--color-custom-green); }
+        .text-custom-green { color: var(--color-custom-green); }
+
+        /* iPhoneのセーフエリア（下部バー）対策 */
+        .safe-bottom-padding {
+            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen font-sans antialiased flex flex-col justify-between">
+
+    <div class="max-w-md mx-auto w-full min-h-screen flex flex-col bg-white shadow-lg relative justify-between">
+        
+        <header class="bg-custom-blue text-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50 pt-[calc(1rem+env(safe-area-inset-top,0px))]">
             <div class="flex items-center space-x-2">
-                <i class="fas fa-space-shuttle transform -rotate-45 text-slate-300"></i>
+                <i class="fas fa-space-shuttle transform -rotate-45 text-slate-200"></i>
                 <h1 class="font-bold text-lg tracking-wider">Ginga Vocab Quiz</h1>
             </div>
-            <button id="btn-back" class="hidden text-sm bg-slate-700 hover:bg-slate-800 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1" onclick="abortQuiz()">
+            <button id="btn-back" class="hidden text-sm bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1" onclick="abortQuiz()">
                 <i class="fas fa-chevron-left text-xs"></i> <span>中断して戻る</span>
             </button>
         </header>
 
-        <main class="flex-1 p-4 flex flex-col">
+        <main class="flex-1 p-4 flex flex-col justify-between">
 
-            <section id="screen-home" class="space-y-4 pt-2">
+            <section id="screen-home" class="space-y-4 pt-2 safe-bottom-padding">
                 <div id="section-list" class="space-y-4">
                     </div>
             </section>
@@ -37,40 +55,40 @@
                     </div>
                     
                     <div class="w-full bg-slate-100 rounded-full h-1.5">
-                        <div id="quiz-progress-bar" class="bg-slate-400 h-1.5 rounded-full transition-all duration-300" style="width: 10%"></div>
+                        <div id="quiz-progress-bar" class="bg-custom-blue h-1.5 rounded-full transition-all duration-300" style="width: 10%"></div>
                     </div>
 
                     <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex-1 flex flex-col justify-center space-y-6">
                         <div class="space-y-1">
-                            <span class="text-xs font-bold text-slate-600 tracking-wider block">意味 / HINT</span>
+                            <span class="text-xs font-bold text-slate-500 tracking-wider block">意味 / HINT</span>
                             <p id="quiz-hint" class="text-base text-slate-700 leading-relaxed font-medium"></p>
                         </div>
 
                         <div class="space-y-2 pt-4 border-t border-slate-200/60">
-                            <span class="text-xs font-bold text-slate-600 tracking-wider block">ENGLISH PHRASE</span>
+                            <span class="text-xs font-bold text-slate-500 tracking-wider block">ENGLISH PHRASE</span>
                             <p id="quiz-phrase" class="text-xl font-semibold text-slate-800 leading-relaxed tracking-wide"></p>
                         </div>
 
                         <div id="answer-area" class="hidden space-y-4 pt-4 border-t border-slate-200/60">
                             <div class="text-center">
-                                <span class="text-xs font-bold text-emerald-700 tracking-wider block mb-1">正解</span>
-                                <span id="quiz-answer-word" class="text-2xl font-bold text-emerald-700 tracking-wide"></span>
+                                <span class="text-xs font-bold text-slate-500 tracking-wider block mb-1">正解</span>
+                                <span id="quiz-answer-word" class="text-2xl font-bold text-custom-green tracking-wide"></span>
                             </div>
                             
                             <div class="flex justify-center space-x-3 pt-2">
                                 <button onclick="speakPhrase()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
-                                    <i class="fas fa-volume-up text-slate-500"></i> <span>フレーズ全体</span>
+                                    <i class="fas fa-volume-up text-custom-blue"></i> <span>フレーズ全体</span>
                                 </button>
                                 <button onclick="speakWord()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm py-2 px-4 rounded-xl flex items-center space-x-2 transition-colors">
-                                    <i class="fas fa-volume-up text-emerald-600"></i> <span>単語のみ</span>
+                                    <i class="fas fa-volume-up text-custom-green"></i> <span>単語のみ</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="pt-4">
-                    <button id="btn-show-answer" onclick="showAnswer()" class="w-full bg-slate-600 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl shadow-md transition-colors text-center block">
+                <div class="pt-2 safe-bottom-padding">
+                    <button id="btn-show-answer" onclick="showAnswer()" class="w-full bg-custom-blue hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity text-center block">
                         答えを見る
                     </button>
 
@@ -78,7 +96,7 @@
                         <button onclick="submitJudgment(false)" class="flex-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center space-x-2">
                             <i class="fas fa-times"></i> <span>違った</span>
                         </button>
-                        <button onclick="submitJudgment(true)" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 rounded-xl shadow-md transition-colors flex items-center justify-center space-x-2">
+                        <button onclick="submitJudgment(true)" class="flex-1 bg-custom-green hover:opacity-90 text-white font-bold py-3.5 rounded-xl shadow-md transition-opacity flex items-center justify-center space-x-2">
                             <i class="fas fa-check"></i> <span>合ってた</span>
                         </button>
                     </div>
@@ -97,7 +115,7 @@
             { id: 2, word: "obsession", phrase: "This new show is my latest (____).", hint: "大好きなもの、どハマり\n「この新しい番組、最近私がどハマりしてるものんだ。」" },
             { id: 3, word: "hooked", phrase: "I got (____) from the very first episode.", hint: "夢中になって、抜け出せない\n「最初の第1話から完全に心を掴まれちゃったよ。」" },
             { id: 4, word: "obsessed", phrase: "I’m completely (____) with the cast.", hint: "頭から離れないほど好き\n「出演陣がとにかく好きすぎて頭から離れない。」" },
-            { id: 5, word: "reason", phrase: "The (____) I like it so much is the characters.", hint: "理由、なぜかというと\n「私がそれをこんなに好きな理由は、登場人物たちなんだ。」" },
+            { id: 5, word: "reason", phrase: "The (____) I like it so much is the characters.", hint: "理由、なぜかというと\n「私がそれをこんなに好きな理由は、登場人物たちんだ。」" },
             { id: 6, word: "draw", phrase: "What (____)s me to the show is the realistic storyline.", hint: "惹きつける、魅力\n「その番組に惹きつけられるのは、リアルなストーリー展開だ。」" },
             { id: 7, word: "appeal", phrase: "The main (____) of the drama is how relatable it is.", hint: "魅力、訴えかけるもの\n「そのドラマの主な魅力は、いかに共感できるかという点だ。」" },
             { id: 8, word: "character", phrase: "The (____)s are all so unique and lovable.", hint: "登場人物、キャラクター\n「登場人物たちがみんな個性的で愛らしいんだ。」" },
@@ -106,7 +124,7 @@
             // Section 2
             { id: 11, word: "charming", phrase: "Her smile is incredibly (____).", hint: "チャーミングな、魅力的な\n「彼女の笑顔は信じられないほどチャーミングだ。」" },
             { id: 12, word: "cute", phrase: "I love her style; she always looks so (____).", hint: "可愛い\n「彼女のスタイルが好きなんだ。いつもすごく可愛く見える。」" },
-            { id: 13, word: "captivating", phrase: "Their acting is so (____) that I can't look away.", hint: "心を奪う、魅惑的な\n「彼らの演技があまりにも魅惑的で、目が離せない。」" },
+            { id: 13, word: "captivating", phrase: "Their acting is so (____) that I can't look away.", hint: "心を奪う、魅惑的な\n protective:「彼らの演技があまりにも魅惑的で、目が離せない。」" },
             { id: 14, word: "vibe", phrase: "The whole show has a really cozy (____).", hint: "雰囲気、空気感\n「番組全体がすごく居心地の良い雰囲気を持っている。」" },
             { id: 15, word: "chemistry", phrase: "The (____) between the two leads is amazing.", hint: "相性、ケミストリー\n「主演2人の相性（ケミストリー）が素晴らしい。」" },
             { id: 16, word: "politics", phrase: "I’ve never really cared about (____).", hint: "政治\n「政治のことなんて、これまでの人生で全然気にしたことがなかった。」" },
@@ -164,6 +182,9 @@
         // 3. 画面描画初期化
         window.addEventListener('DOMContentLoaded', () => {
             renderHome();
+            if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = getFemaleVoice;
+            }
         });
 
         // 4. ホーム画面の動的生成
@@ -185,7 +206,7 @@
                 const weakCount = sectionIds.filter(id => weakList.includes(id)).length;
                 const isMastered = masterProgress[s] === true && weakCount === 0;
 
-                // ステータス表示（くすんだトーンのバッジ）
+                // ステータス表示
                 let statusBadge = '';
                 if (isMastered) {
                     statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-check-circle"></i> マスター済み</span>`;
@@ -206,7 +227,7 @@
                         <div>${statusBadge}</div>
                     </div>
                     <div class="grid grid-cols-2 gap-2 pt-2">
-                        <button onclick="startQuiz(${s}, false)" class="col-span-2 bg-slate-600 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-colors shadow-sm">
+                        <button onclick="startQuiz(${s}, false)" class="col-span-2 bg-custom-blue hover:opacity-90 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-opacity shadow-sm">
                             ${isMastered || weakCount > 0 ? 'もう一度解く' : '解いてみる'}
                         </button>
                         <button onclick="startQuiz(${s}, true)" ${weakCount === 0 ? 'disabled' : ''} class="col-span-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold py-2 px-4 rounded-xl text-sm transition-colors disabled:opacity-40 disabled:pointer-events-none">
@@ -327,6 +348,22 @@
         }
 
         // 10. Web Speech APIによる音声再生機能
+        function getFemaleVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            const femaleKeywords = ['samantha', 'zira', 'female', 'hazel', 'moira', 'tessa', 'karen', 'susan'];
+            
+            let selectedVoice = voices.find(voice => {
+                const nameLower = voice.name.toLowerCase();
+                return voice.lang.startsWith('en') && femaleKeywords.some(keyword => nameLower.includes(keyword));
+            });
+
+            if (!selectedVoice) {
+                selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+            }
+
+            return selectedVoice;
+        }
+
         function speakPhrase() {
             const text = document.getElementById('quiz-phrase').textContent;
             playSpeech(text);
@@ -341,6 +378,12 @@
             window.speechSynthesis.cancel();
 
             const utterance = new SpeechSynthesisUtterance(text);
+            
+            const femaleVoice = getFemaleVoice();
+            if (femaleVoice) {
+                utterance.voice = femaleVoice;
+            }
+            
             utterance.lang = 'en-US';
             utterance.rate = 1.0;
 
